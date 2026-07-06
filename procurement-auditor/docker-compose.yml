@@ -1,0 +1,50 @@
+# Fully open-source, self-hosted stack: Postgres (with pgvector) + FastAPI + nginx/React.
+# One command to run everything:  docker compose up --build
+#
+# Put your GROQ_API_KEY (and optional Gmail creds) in a .env file next to this one:
+#   GROQ_API_KEY=your-key
+#   GMAIL_ADDRESS=you@gmail.com
+#   GMAIL_APP_PASSWORD=your-app-password
+#
+# Then open http://localhost:8080
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: procurement
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d procurement"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/procurement
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GMAIL_ADDRESS: ${GMAIL_ADDRESS:-}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
+      CORS_ORIGINS: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:

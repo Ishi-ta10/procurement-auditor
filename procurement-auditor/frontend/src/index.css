@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Theme tokens — light (default) and dark (.dark on <html>).
+   Values are space-separated RGB triplets so Tailwind's
+   `rgb(var(--x) / <alpha-value>)` opacity modifiers keep working.
+   ============================================================ */
+:root {
+  --c-surface: 246 247 249;
+  --c-panel: 255 255 255;
+  --c-panel2: 241 243 245;
+  --c-panel3: 233 237 242;
+  --c-edge: 226 232 240;
+  --c-edge2: 203 213 225;
+
+  --c-ink: 15 23 42;
+  --c-ink-soft: 51 65 85;
+  --c-ink-muted: 100 116 139;
+  --c-ink-faint: 148 163 184;
+
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.05), 0 1px 3px 0 rgb(15 23 42 / 0.07);
+  --shadow-elevated: 0 12px 32px -12px rgb(15 23 42 / 0.18);
+  --grid-line: 226 232 240;
+  color-scheme: light;
+}
+
+html.dark {
+  --c-surface: 10 12 17;
+  --c-panel: 17 20 28;
+  --c-panel2: 23 27 37;
+  --c-panel3: 30 35 48;
+  --c-edge: 36 42 55;
+  --c-edge2: 47 54 70;
+
+  --c-ink: 241 245 249;
+  --c-ink-soft: 203 213 225;
+  --c-ink-muted: 148 163 184;
+  --c-ink-faint: 107 114 128;
+
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 0 rgb(0 0 0 / 0.2);
+  --shadow-elevated: 0 10px 30px -12px rgb(0 0 0 / 0.7);
+  --grid-line: 36 42 55;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(var(--c-surface));
+  color: rgb(var(--c-ink-soft));
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, rgba(99, 102, 241, 0.06), transparent 60%),
+    radial-gradient(800px 480px at 100% 0%, rgba(56, 189, 248, 0.05), transparent 55%);
+  background-attachment: fixed;
+}
+html.dark body {
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, rgba(99, 102, 241, 0.12), transparent 60%),
+    radial-gradient(800px 480px at 100% 0%, rgba(56, 189, 248, 0.08), transparent 55%);
+}
+
+/* Refined scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-edge2)) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-edge2));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-edge bg-panel shadow-card;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:border-edge2 hover:shadow-elevated;
+  }
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-wider text-ink-muted;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium
+      transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/50
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-500 shadow-[0_6px_20px_-8px_rgba(99,102,241,0.8)];
+  }
+  .btn-secondary {
+    @apply btn border border-edge2 bg-panel2 text-ink-soft hover:bg-panel3 hover:text-ink;
+  }
+  .btn-success {
+    @apply btn border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 dark:text-emerald-300;
+  }
+  .btn-danger {
+    @apply btn border border-rose-500/30 bg-rose-500/15 text-rose-600 hover:bg-rose-500/25 dark:text-rose-300;
+  }
+  .btn-ghost {
+    @apply btn text-ink-muted hover:bg-panel2 hover:text-ink;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-edge bg-panel2 px-3.5 py-2 text-sm text-ink
+      placeholder:text-ink-faint focus:border-brand-500/60 focus:outline-none focus:ring-2 focus:ring-brand-500/25;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-panel2;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 animate-shimmer;
+    content: "";
+    background: linear-gradient(90deg, transparent, rgb(var(--c-ink) / 0.06), transparent);
+    transform: translateX(-100%);
+  }
+}

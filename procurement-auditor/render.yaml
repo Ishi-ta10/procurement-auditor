@@ -1,0 +1,34 @@
+# Render Blueprint — deploys the FastAPI backend on Render's free tier.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# You can either:
+#   (a) push this repo to GitHub and create a new "Blueprint" on Render (it reads
+#       this file automatically), or
+#   (b) ignore this file and create a "Web Service" manually (see DEPLOYMENT.md).
+#
+# Secret values (DATABASE_URL, GROQ_API_KEY, etc.) are marked `sync: false`, so
+# Render will prompt you to enter them in the dashboard — they are never committed.
+
+services:
+  - type: web
+    name: procurement-auditor-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    region: oregon
+    healthCheckPath: /health
+    buildCommand: "pip install -r requirements.txt && python bootstrap.py && python seed.py && (python seed_memory.py || true)"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: GMAIL_ADDRESS
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false

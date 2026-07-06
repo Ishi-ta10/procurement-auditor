@@ -1,0 +1,5 @@
+# Alembic migration versions.
+#
+# The Supabase schema already exists and is seeded, so this project starts with no
+# migrations. Only add a revision here if a future feature genuinely requires a schema
+# change. Do NOT generate migrations that drop or recreate the existing tables.
